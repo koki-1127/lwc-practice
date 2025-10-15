@@ -1,0 +1,87 @@
+<template>
+    <lightning-card icon-name="standard:opportunity" variant="base">
+        <div>
+            <!-- 検索条件設定エリア -->
+            <lightning-input 
+            type="text"
+            label="名前検索"
+            value={searchName}
+            onchange={searchNameChange}
+            ></lightning-input>
+            <lightning-input 
+            type="date"
+            label="日付検索"
+            value={searchDate}
+            onchange={searchDateChange}
+            ></lightning-input>
+            <lightning-combobox
+            name="progress"
+            label="並び替え項目"
+            value={sortField}
+            placeholder="検索条件を設定してください"
+            options={sortOptions}
+            onchange={SortFieldChange}
+            ></lightning-combobox>
+            <lightning-button 
+            variant="base"
+            label={sortAsc ? "昇順です" : "降順です" } 
+            onclick={sortToggle} 
+            ></lightning-button>
+            <lightning-button 
+            variant="base"
+            label="検索" 
+            onclick={handleSearchClick} 
+            ></lightning-button>
+        </div>
+    </lightning-card>
+
+
+    <!-- 一覧表示エリア -->
+    <template if:true={opportunityList}>
+        <template for:each={opportunityList} for:item={opportunityItem}>
+            <p key={opportunityItem.Id}>
+                {opportunityItem.Name}/{opportunityItem.CloseDate}
+                <lightning-button 
+                  variant="base"
+                  label="詳細表示" 
+                  onclick={opportunityViewClick} 
+                  class="slds-m-left_small"
+                  data-id={opportunityItem.Id}
+                >詳細表示</lightning-button>
+            </p>
+        </template>
+    </template>
+    <template if:true={error}>
+        <p>
+            {error.body.message}
+        </p>
+    </template>
+
+    <!-- ページ詳細表示エリア -->
+    <template if:true={selectedRecordDetail}>
+        <div>
+            <h3>詳細情報</h3>
+            <p>名前：{selectedRecordDetail.Name}</p>
+            <p>金額：{selectedRecordDetail.Amount}</p>
+            <p>完了予定日：{selectedRecordDetail.CloseDate}</p>
+        </div>
+    </template>
+
+    <!-- ページネーション表示エリア -->
+    <div>
+        <lightning-button 
+          variant="base"
+          label="前ページ" 
+          onclick={handlePrevious} 
+        ></lightning-button>
+
+        <span>ページ{currentPage}/{totalPages}</span>
+
+        <lightning-button 
+          variant="base"
+          label="次ページ" 
+          onclick={handleNext} 
+        ></lightning-button>
+    </div>
+
+</template>
